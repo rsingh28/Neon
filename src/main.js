@@ -10,8 +10,11 @@ var scene = null;
 var camera = null;
 var renderer = null;
 var controls = null;
-var cube2 = null;
-var sphere = null;
+
+var geoObstacle = null;
+var matObstacle = null;
+var obstacles = [];
+var player = null;
 
 // Events & callbacks
 document.addEventListener("load", onLoad());
@@ -46,35 +49,54 @@ function initRenderer() {
 	//controls = new THREE.OrbitControls(camera, renderer.domElement);
 	//controls.target.set(0,0,1);
 
-	var geometry = new THREE.BoxGeometry( 10, 1000, 0.001 );
-	var material = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
-	var cube = new THREE.Mesh( geometry, material );
-	cube.position.set(0,1000/2,0);
-	scene.add( cube );
-
-	var geometry2 = new THREE.BoxGeometry( 1, 1, 1 );
-	var material2 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-	cube2 = new THREE.Mesh( geometry2, material2 );
-	cube2.position.set(0,80,0);
-	scene.add( cube2 );
-
-	var geoS = new THREE.SphereGeometry( 0.5, 32, 32 );
-	var matS = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-	sphere = new THREE.Mesh( geoS, matS );
-	sphere.position.set(0,1,0);
-	scene.add( sphere );
-
 	add3DAxis();
+	initGame();
 	onRender(); // start update loop
+}
+
+function initGame() {
+	var geoPlane = new THREE.BoxGeometry( 10, 1000, 0.001 );
+	var matPlane = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
+	var plane = new THREE.Mesh(geoPlane, matPlane);
+	plane.position.set(0,1000/2,0);
+	scene.add(plane);
+
+	geoObstacle = new THREE.BoxGeometry( 1, 1, 1 );
+	matObstacle = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+	obstacles = [
+		new THREE.Vector3(0,80,0),
+		new THREE.Vector3(2,100,0),
+		new THREE.Vector3(0,150,0),
+	];
+	addObstacles();
+
+	var geoPlayer = new THREE.SphereGeometry( 0.5, 32, 32 );
+	var matPlayer = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+	player = new THREE.Mesh(geoPlayer, matPlayer);
+	player.position.set(0,1,0);
+	scene.add(player);
+}
+
+function addObstacles() {
+	for(var i = 0; i < obstacles.length; i++) {
+		var obstacle = obstacles[i];
+		addObstacle(obstacle.x, obstacle.y, obstacle.z);
+	}
+}
+
+function addObstacle(x,y,z) {
+	var obstacle = new THREE.Mesh(geoObstacle,matObstacle);
+	obstacle.position.set(x,y,z);
+	scene.add(obstacle);
 }
 
 function onUpdate() {
 	//controls.update();
 	camera.position.y += 0.5;
-	sphere.position.y += 0.5;
+	player.position.y += 0.5;
 
 	var time = performance.now() * 0.005;
-	sphere.position.x = Math.sin( time * 0.7 ) * 1 + 0;
+	player.position.x = Math.sin( time * 0.7 ) * 1 + 0;
 	//cube2.position.y += 0.05;
 }
 
