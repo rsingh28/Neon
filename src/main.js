@@ -5,6 +5,10 @@
 var WINDOW_WIDTH = 800;
 var WINDOW_HEIGHT = 600;
 
+var PLANE_WIDTH = 10;
+var PLANE_LENGTH = 1000;
+var OBSTACLE_WIDTH = 1;
+
 // Globals
 var scene = null;
 var camera = null;
@@ -55,18 +59,18 @@ function initRenderer() {
 }
 
 function initGame() {
-	var geoPlane = new THREE.BoxGeometry( 10, 1000, 0.001 );
+	var geoPlane = new THREE.BoxGeometry(PLANE_WIDTH, PLANE_LENGTH, 0.001);
 	var matPlane = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
 	var plane = new THREE.Mesh(geoPlane, matPlane);
-	plane.position.set(0,1000/2,0);
+	plane.position.set(0,PLANE_LENGTH/2,0);
 	scene.add(plane);
 
-	geoObstacle = new THREE.BoxGeometry( 1, 1, 1 );
+	geoObstacle = new THREE.BoxGeometry(1,OBSTACLE_WIDTH,1);
 	matObstacle = new THREE.MeshBasicMaterial( {color: 0xff0000} );
 	obstacles = [
-		new THREE.Vector3(0,80,0),
-		new THREE.Vector3(2,100,0),
-		new THREE.Vector3(0,150,0),
+		positionObstacle(0.5,80),
+		positionObstacle(0.75,100),
+		positionObstacle(0,150),
 	];
 	addObstacles();
 
@@ -77,16 +81,29 @@ function initGame() {
 	scene.add(player);
 }
 
+function positionObstacle(x,y) {
+	var v = new THREE.Vector3(0,0,0);
+
+	// 0(-PW/2) +1(PW/2)
+	var W = (PLANE_WIDTH/2 - -PLANE_WIDTH/2) - 2*OBSTACLE_WIDTH/2;
+	var L = PLANE_LENGTH;
+	v.x = W*x + -PLANE_WIDTH/2 + OBSTACLE_WIDTH/2;
+	//v.y = L*y;
+	v.y = y;
+
+	return v;
+}
+
 function addObstacles() {
 	for(var i = 0; i < obstacles.length; i++) {
 		var obstacle = obstacles[i];
-		addObstacle(obstacle.x, obstacle.y, obstacle.z);
+		addObstacle(obstacle.x, obstacle.y);
 	}
 }
 
-function addObstacle(x,y,z) {
+function addObstacle(x,y) {
 	var obstacle = new THREE.Mesh(geoObstacle,matObstacle);
-	obstacle.position.set(x,y,z);
+	obstacle.position.set(x,y,0);
 	scene.add(obstacle);
 }
 
