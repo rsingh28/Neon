@@ -8,6 +8,9 @@ var WINDOW_HEIGHT = 600;
 var PLANE_WIDTH = 10;
 var PLANE_LENGTH = 1000;
 var OBSTACLE_WIDTH = 1;
+var N_OBSTACLES = 100;
+var N_BULLETS_POOL = 10;
+var BULLET_SPEED = 0.1;
 
 // Globals
 var scene = null;
@@ -20,8 +23,16 @@ var matObstacle = null;
 var obstacles = [];
 var player = null;
 
+var geoBullet = null;
+var matBullet = null;
+var bullets = [];
+var currentBulletIdx = 0;
+
+var lastTime = 0.0;
+
 // Events & callbacks
 document.addEventListener("load", onLoad());
+document.addEventListener("keypress", onKeypress);
 
 function onLoad() {
 	initRenderer();
@@ -67,7 +78,6 @@ function initGame() {
 
 	geoObstacle = new THREE.BoxGeometry(1,OBSTACLE_WIDTH,1);
 	matObstacle = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-	
 	generateObstacles();
 	addObstacles();
 
@@ -76,6 +86,39 @@ function initGame() {
 	player = new THREE.Mesh(geoPlayer, matPlayer);
 	player.position.set(0,1,0);
 	scene.add(player);
+
+	geoBullet = new THREE.SphereGeometry( 0.1, 32, 32 );
+	matBullet = new THREE.MeshBasicMaterial( {color: 0xff00ff} );
+	createBulletPool();
+}
+
+function createBulletPool() {
+	for(var i = 0; i < N_BULLETS_POOL; i++) {
+		var bullet = new THREE.Mesh(geoBullet, matBullet);
+		bullet.position.set(player.position.x,player.position.y,player.position.z);
+		bullets.push(bullet);
+		scene.add(bullet);
+	}
+	currentBulletIdx = 0;
+}
+
+function onKeypress(e) {
+	//console.log(e.key);
+	//console.log(e.keyCode);
+
+	if(e.keyCode == 32) {
+		shootBullet();
+	}
+}
+
+function shootBullet() {
+	console.log("shoot!!");
+	if(currentBulletIdx >= N_BULLETS_POOL) {
+		console.log("reset bullets pool");
+		currentBulletIdx = 0;
+	}
+	bullets[currentBulletIdx].position.set(player.position.x,player.position.y,player.position.z);
+	currentBulletIdx++;
 }
 
 function generateObstacles() {
@@ -84,8 +127,6 @@ function generateObstacles() {
 		positionObstacle(0.75,100),
 		positionObstacle(0,150),
 	];*/
-
-	var N_OBSTACLES = 100;
 	for(var i = 0; i < N_OBSTACLES; i++) {
 		var x = Math.random();
 		var y = Math.random();
@@ -121,13 +162,24 @@ function addObstacle(x,y) {
 }
 
 function onUpdate() {
+	var dt = performance.now()-lastTime;
+	lastTime = performance.now();
+
+	//console.log(dt);
+
 	//controls.update();
 	camera.position.y += 0.5;
 	player.position.y += 0.5;
 
+	// update player
 	var time = performance.now() * 0.005;
 	player.position.x = Math.sin( time * 0.7 ) * 1 + 0;
-	//cube2.position.y += 0.05;
+
+	// update bullets
+	for(var i = 0; i < bullets.length; i++) {
+		var bullet = bullets[i];
+		bullet.position.y += BULLET_SPEED*dt;
+	}
 }
 
 function add3DAxis() {
