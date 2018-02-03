@@ -1,6 +1,6 @@
 
 'use strict';
-
+Myo.connect();
 // Constants
 var WINDOW_WIDTH = 800;
 var WINDOW_HEIGHT = 600;
@@ -31,6 +31,8 @@ var bullets = [];
 var currentBulletIdx = 0;
 
 var lastTime = 0.0;
+
+var playerXPos = null;
 
 // Events & callbacks
 document.addEventListener("load", onLoad());
@@ -68,7 +70,33 @@ function initRenderer() {
 
 	add3DAxis();
 	initGame();
-	onRender(); // start update loop
+	initMyo();
+}
+
+function initMyo(){
+	console.log("test");
+
+	//Myo.connect();
+
+	Myo.on('fist', function(){
+
+		console.log('Hello Myo!');
+		this.vibrate();
+		this.zeroOrientation();
+		requestAnimationFrame(onRender);
+		onUpdate();
+		renderer.render(scene, camera);
+
+	});
+
+
+
+	Myo.on('imu', function(data){
+		//console.log(data.orientation);
+		playerXPos = data.orientation.y / 0.35;
+		console.log(playerXPos);
+	});
+	
 }
 
 function initGame() {
@@ -178,7 +206,7 @@ function onUpdate() {
 
 	// update player
 	var time = performance.now() * 0.005;
-	player.position.x = Math.sin( time * 0.7 ) * 1 + 0;
+	player.position.x = playerXPos; //Math.sin( time * 0.7 ) * 1 + 0;
 
 	// update bullets
 	for(var i = 0; i < bullets.length; i++) {
