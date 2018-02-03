@@ -1,6 +1,6 @@
 
 'use strict';
-Myo.connect();
+
 // Constants
 var WINDOW_WIDTH = 800;
 var WINDOW_HEIGHT = 600;
@@ -31,7 +31,6 @@ var bullets = [];
 var currentBulletIdx = 0;
 
 var lastTime = 0.0;
-
 var playerXPos = null;
 
 // Events & callbacks
@@ -70,33 +69,9 @@ function initRenderer() {
 
 	add3DAxis();
 	initGame();
-	initMyo();
-}
-
-function initMyo(){
-	console.log("test");
-
-	//Myo.connect();
-
-	Myo.on('fist', function(){
-
-		console.log('Hello Myo!');
-		this.vibrate();
-		this.zeroOrientation();
-		requestAnimationFrame(onRender);
-		onUpdate();
-		renderer.render(scene, camera);
-
-	});
-
-
-
-	Myo.on('imu', function(data){
-		//console.log(data.orientation);
-		playerXPos = data.orientation.y / 0.35;
-		console.log(playerXPos);
-	});
 	
+	onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
+	//initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
 }
 
 function initGame() {
@@ -206,7 +181,13 @@ function onUpdate() {
 
 	// update player
 	var time = performance.now() * 0.005;
-	player.position.x = playerXPos; //Math.sin( time * 0.7 ) * 1 + 0;
+
+	// if Myo gives playerXPos, use it
+	if (playerXPos == null) {
+		player.position.x = Math.sin( time * 0.7 ) * 1 + 0;
+	} else {
+		player.position.x = playerXPos;
+	}
 
 	// update bullets
 	for(var i = 0; i < bullets.length; i++) {
