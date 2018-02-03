@@ -67,11 +67,8 @@ function initGame() {
 
 	geoObstacle = new THREE.BoxGeometry(1,OBSTACLE_WIDTH,1);
 	matObstacle = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-	obstacles = [
-		positionObstacle(0.5,80),
-		positionObstacle(0.75,100),
-		positionObstacle(0,150),
-	];
+	
+	generateObstacles();
 	addObstacles();
 
 	var geoPlayer = new THREE.SphereGeometry( 0.5, 32, 32 );
@@ -81,6 +78,22 @@ function initGame() {
 	scene.add(player);
 }
 
+function generateObstacles() {
+	/*obstacles = [
+		positionObstacle(0.5,80),
+		positionObstacle(0.75,100),
+		positionObstacle(0,150),
+	];*/
+
+	var N_OBSTACLES = 100;
+	for(var i = 0; i < N_OBSTACLES; i++) {
+		var x = Math.random();
+		var y = Math.random();
+		var obstacle = positionObstacle(x,y);
+		obstacles.push(obstacle);
+	}
+}
+
 function positionObstacle(x,y) {
 	var v = new THREE.Vector3(0,0,0);
 
@@ -88,8 +101,8 @@ function positionObstacle(x,y) {
 	var W = (PLANE_WIDTH/2 - -PLANE_WIDTH/2) - 2*OBSTACLE_WIDTH/2;
 	var L = PLANE_LENGTH;
 	v.x = W*x + -PLANE_WIDTH/2 + OBSTACLE_WIDTH/2;
-	//v.y = L*y;
-	v.y = y;
+	v.y = L*y;
+	//v.y = y;
 
 	return v;
 }
