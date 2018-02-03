@@ -11,6 +11,8 @@ var OBSTACLE_WIDTH = 1;
 var N_OBSTACLES = 100;
 var N_BULLETS_POOL = 10;
 var BULLET_SPEED = 0.1;
+var BULLET_SIZE = 0.1;
+var PLAYER_SIZE = 0.5;
 
 // Globals
 var scene = null;
@@ -81,13 +83,13 @@ function initGame() {
 	generateObstacles();
 	addObstacles();
 
-	var geoPlayer = new THREE.SphereGeometry( 0.5, 32, 32 );
+	var geoPlayer = new THREE.SphereGeometry( PLAYER_SIZE, 32, 32 );
 	var matPlayer = new THREE.MeshBasicMaterial( {color: 0xffff00} );
 	player = new THREE.Mesh(geoPlayer, matPlayer);
-	player.position.set(0,1,0);
+	player.position.set(0,2*PLAYER_SIZE,0);
 	scene.add(player);
 
-	geoBullet = new THREE.SphereGeometry( 0.1, 32, 32 );
+	geoBullet = new THREE.SphereGeometry( BULLET_SIZE, 16, 16 );
 	matBullet = new THREE.MeshBasicMaterial( {color: 0xff00ff} );
 	createBulletPool();
 }
@@ -96,7 +98,7 @@ function createBulletPool() {
 	for(var i = 0; i < N_BULLETS_POOL; i++) {
 		var bullet = new THREE.Mesh(geoBullet, matBullet);
 		bullet.position.set(player.position.x,player.position.y,player.position.z);
-		bullets.push(bullet);
+		bullets.push({"mesh":bullet, "alive":false});
 		scene.add(bullet);
 	}
 	currentBulletIdx = 0;
@@ -117,7 +119,10 @@ function shootBullet() {
 		console.log("reset bullets pool");
 		currentBulletIdx = 0;
 	}
-	bullets[currentBulletIdx].position.set(player.position.x,player.position.y,player.position.z);
+	var bullet = bullets[currentBulletIdx];
+	bullet.mesh.position.set(player.position.x,player.position.y,player.position.z);
+	bullet.alive = true;
+	bullet.mesh.visible = true;
 	currentBulletIdx++;
 }
 
@@ -178,8 +183,40 @@ function onUpdate() {
 	// update bullets
 	for(var i = 0; i < bullets.length; i++) {
 		var bullet = bullets[i];
-		bullet.position.y += BULLET_SPEED*dt;
+		if(bullet.alive) {
+			bullet.mesh.position.y += BULLET_SPEED*dt;
+			checkBulletCollision(bullet);
+		}
 	}
+}
+
+function checkBulletCollision(bullet) {
+	for(var i = 0; i < obstacles.length; i++) {
+		var obstacle = obstacles[i];
+		if(isBulletCollideObstacle(bullet.mesh,obstacle)) {
+			console.log("collide!");
+			//todo: kill bullet
+			bullet.alive = false;
+			bullet.mesh.visible = false;
+		}
+	}
+}
+
+function isBulletCollideObstacle(bullet, obstacle) {
+
+	var minBulletBox = new THREE.Vector3(bullet.position.x,bullet.position.y,bullet.position.z);
+	minBulletBox.sub(new THREE.Vector3(BULLET_SIZE,BULLET_SIZE,BULLET_SIZE));
+	var maxBulletBox = new THREE.Vector3(bullet.position.x,bullet.position.y,bullet.position.z);
+	maxBulletBox.add(new THREE.Vector3(BULLET_SIZE,BULLET_SIZE,BULLET_SIZE));
+
+	var minObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
+	minObsBox.sub(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
+	var maxObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
+	maxObsBox.add(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
+
+	var bulletAABB = new THREE.Box3(minBulletBox,maxBulletBox);
+	var obstacleAABB = new THREE.Box3(minObsBox,maxObsBox);
+	return bulletAABB.intersectsBox(obstacleAABB);
 }
 
 function add3DAxis() {
