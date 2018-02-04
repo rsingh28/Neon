@@ -1,7 +1,6 @@
 Myo.connect();
 
 var playerXPos = null;
-var bul=0;
 
 function initMyo(){
 	console.log("test");
@@ -18,11 +17,14 @@ function initMyo(){
 	});
 	Myo.on('imu', function(data){
 		playerXPos = data.orientation.y / 0.35;
-		//console.log(playerXPos);
-	});
-	
-	Myo.on('fist', function(){
-			shootBullet();
+		//console.log(data.orientation.z);
 	});
 
+	
+	Myo.on('imu', function(data){
+		if(data.orientation.z > 0.5){
+			console.log(data.orientation.z);
+			shootBullet();
+		}
+	});
 }
