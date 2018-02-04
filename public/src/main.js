@@ -26,6 +26,7 @@ var controls = null;
 var geoObstacle = null;
 var matObstacle = null;
 var obstacles = [];
+var obstacle_meshes = [];
 var player = null;
 
 var geoBullet = null;
@@ -78,8 +79,8 @@ function initRenderer() {
 }
 
 function onAfterLoad() {
-	onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
-	//initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
+	//onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
+	initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
 }
 
 function initGame() {
@@ -215,6 +216,7 @@ function addObstacles() {
 
 function addObstacle(x,y) {
 	var obstacle = new THREE.Mesh(geoObstacle,matObstacle);
+	obstacle_meshes.push(obstacle);
 	obstacle.position.set(x,y,0);
 	scene.add(obstacle);
 }
@@ -263,6 +265,8 @@ function checkBulletCollision(bullet) {
 			//todo: kill bullet
 			bullet.alive = false;
 			bullet.mesh.visible = false;
+			//console.log(obstacle_meshes);
+			obstacle_meshes[i].visible = false;
 		}
 	}
 }
