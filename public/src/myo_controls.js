@@ -5,8 +5,8 @@ var playerXPos = null;
 function initMyo(){
 	console.log("test");
 
-	Myo.on('fist', function(){
-
+	Myo.on('fingers_spread', function(){
+		Myo.setLockingPolicy("none");
 		console.log('Hello Myo!');
 		this.vibrate();
 		this.zeroOrientation();
@@ -22,7 +22,12 @@ function initMyo(){
 			console.log("player collide!");
 			this.vibrate();
 		}
+		//console.log(playerXPos);
 	});
 
 	
+	Myo.on('fist', function(){
+			shootBullet();
+	});
+
 }
