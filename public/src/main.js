@@ -91,8 +91,8 @@ function initRenderer() {
 }
 
 function onAfterLoad() {
-	//onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
-	initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
+	onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
+	//initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
 }
 
 function initGame() {
@@ -330,13 +330,17 @@ function checkPlayerCollision(player) {
 }
 
 function isPlayerCollideObstacle(player, obstacle) {
+	var minPlayerBox = new THREE.Vector3(player.position.x,player.position.y,player.position.z);
+	minPlayerBox.sub(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
+	var maxPlayerBox = new THREE.Vector3(player.position.x,player.position.y,player.position.z);
+	maxPlayerBox.add(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
 
 	var minObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
 	minObsBox.sub(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
 	var maxObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
 	maxObsBox.add(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
 
-	var playerAABB = new THREE.Box3().setFromObject(player);
+	var playerAABB = new THREE.Box3(minPlayerBox,maxPlayerBox);
 	var obstacleAABB = new THREE.Box3(minObsBox,maxObsBox);
 	return playerAABB.intersectsBox(obstacleAABB);
 }
