@@ -91,8 +91,8 @@ function initRenderer() {
 }
 
 function onAfterLoad() {
-	onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
-	//initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
+	//onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
+	initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
 }
 
 function initGame() {

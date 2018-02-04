@@ -18,7 +18,7 @@ function initMyo(){
 	Myo.on('imu', function(data){
 		playerXPos = data.orientation.y / 0.35;
 		if(data.orientation.z > 0.5){
-			console.log(data.orientation.z);
+			shootBullet();
 		}
 	});
 }
