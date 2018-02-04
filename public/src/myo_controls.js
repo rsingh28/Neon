@@ -19,6 +19,6 @@ function initMyo(){
 		playerXPos = data.orientation.y / 0.35;
 		if(data.orientation.z > 0.5){
 			console.log(data.orientation.z);
-		//console.log(data.orientation.z);
+		}
 	});
 }
