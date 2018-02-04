@@ -19,7 +19,6 @@ function initMyo(){
 		playerXPos = data.orientation.y / 0.35;
 		//console.log(data.orientation.z);
 	});
-
 	
 	Myo.on('imu', function(data){
 		if(data.orientation.z > 0.5){

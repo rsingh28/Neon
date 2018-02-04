@@ -14,7 +14,8 @@ var BULLET_SPEED = 0.1;
 var BULLET_SIZE = 0.1;
 var PLAYER_SIZE = 0.5;
 var PLAYER_INIT_POS = new THREE.Vector3(0,0,0);
-var PLAYER_MAX_HEALTH = 100;
+var PLAYER_MAX_HEALTH = 50;
+var HEALTH_BAR_WIDTH = 4.7;
 
 // Globals
 var scene = null;
@@ -36,7 +37,7 @@ var lastTime = 0.0;
 var playerXPos = null;
 
 var playerHealth = PLAYER_MAX_HEALTH;
-var playerIsHit = false;
+var healthBar = null;
 
 // Events & callbacks
 document.addEventListener("load", onLoad());
@@ -117,6 +118,12 @@ function initGame() {
 	var plane = new THREE.Mesh(geoPlane, matPlane);
 	plane.position.set(0,PLANE_LENGTH/2,0);
 	scene.add(plane);
+
+	var geoHealthBar = new THREE.BoxGeometry(HEALTH_BAR_WIDTH, 1, 0.5);
+	var matHealthBar = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+	healthBar = new THREE.Mesh(geoHealthBar, matHealthBar);
+	healthBar.position.set(0,1,3);
+	scene.add(healthBar);
 
 	geoObstacle = new THREE.BoxGeometry(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH);
 	matObstacle = new THREE.MeshBasicMaterial( {map : textureMetal} );
@@ -251,10 +258,15 @@ function onUpdate() {
 	//controls.update();
 	camera.position.y += 0.5;
 	player.position.y += 0.5;
+	healthBar.position.y += 0.5;
 
 	// update player
 	var time = performance.now() * 0.005;
 	checkPlayerCollision(player);
+	console.log(playerHealth);
+	if (playerHealth <= 0) {
+		camera.lookAt(new THREE.Vector3(1,1,1)); // u dead
+	} 
 
 	// if Myo gives playerXPos, use it
 	if (playerXPos == null) {
@@ -307,9 +319,8 @@ function checkPlayerCollision(player) {
 		var obstacle = obstacles[i];
 		if(isPlayerCollideObstacle(player,obstacle)) {
 			playerHealth--;
-			playerIsHit = true;
-		} else {
-			playerIsHit = false;
+			healthBar.scale.x = HEALTH_BAR_WIDTH - (HEALTH_BAR_WIDTH * ( 1 - (playerHealth / PLAYER_MAX_HEALTH)));
+			console.log(healthBar.geometry.parameters.width);
 		}
 	}
 }
