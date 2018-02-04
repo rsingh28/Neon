@@ -18,7 +18,6 @@ function initMyo(){
 	Myo.on('imu', function(data){
 		playerXPos = data.orientation.y / 0.35;
 	});
-
 	
 	Myo.on('fist', function(){
 			shootBullet();
