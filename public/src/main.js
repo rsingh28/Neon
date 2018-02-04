@@ -28,6 +28,7 @@ var matObstacle = null;
 var obstacles = [];
 var obstacle_meshes = [];
 var player = null;
+var playerAABB = null;
 
 var geoBullet = null;
 var matBullet = null;
@@ -181,6 +182,14 @@ function createPlayer() {
 		objLoader.load( 'HQ_Movie cycle.obj', function ( object ) {
 			object.scale.set(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE);
 			player = object;
+
+			playerAABB = new THREE.Box3();
+			playerAABB.setFromCenterAndSize(player.position, new THREE.Vector3(0.5,1,1));
+			//playerAABB.setFromObject(player);
+			//console.log(playerAABB);
+			//var helper = new THREE.Box3Helper(playerAABB, 0xffff00 );
+			//scene.add( helper );
+
 			scene.add(object);
 			onAfterLoad();
 		}, onProgress, onError );
@@ -354,21 +363,27 @@ function checkPlayerCollision(player) {
 		}
 	}
 }
-
+			
 function isPlayerCollideObstacle(player, obstacle) {
+	/*
 	var minPlayerBox = new THREE.Vector3(player.position.x,player.position.y,player.position.z);
 	minPlayerBox.sub(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
 	var maxPlayerBox = new THREE.Vector3(player.position.x,player.position.y,player.position.z);
 	maxPlayerBox.add(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
+	*/
 
 	var minObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
 	minObsBox.sub(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
 	var maxObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
 	maxObsBox.add(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
 
-	var playerAABB = new THREE.Box3(minPlayerBox,maxPlayerBox);
+	//var playerAABB = new THREE.Box3(minPlayerBox,maxPlayerBox);
 	var obstacleAABB = new THREE.Box3(minObsBox,maxObsBox);
-	return playerAABB.intersectsBox(obstacleAABB);
+
+	var playerAABB2 = playerAABB.clone();
+	playerAABB2.translate(player.position);
+	
+	return playerAABB2.intersectsBox(obstacleAABB);
 }
 
 function add3DAxis() {
