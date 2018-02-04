@@ -13,6 +13,7 @@ var N_BULLETS_POOL = 10;
 var BULLET_SPEED = 0.1;
 var BULLET_SIZE = 0.1;
 var PLAYER_SIZE = 0.5;
+var PLAYER_MAX_HEALTH = 100;
 
 // Globals
 var scene = null;
@@ -32,6 +33,9 @@ var currentBulletIdx = 0;
 
 var lastTime = 0.0;
 var playerXPos = null;
+
+var playerHealth = PLAYER_MAX_HEALTH;
+var playerIsHit = false;
 
 // Events & callbacks
 document.addEventListener("load", onLoad());
@@ -70,8 +74,8 @@ function initRenderer() {
 	add3DAxis();
 	initGame();
 	
-	onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
-	//initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
+	//onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
+	initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
 }
 
 function initGame() {
@@ -181,6 +185,7 @@ function onUpdate() {
 
 	// update player
 	var time = performance.now() * 0.005;
+	checkPlayerCollision(player);
 
 	// if Myo gives playerXPos, use it
 	if (playerXPos == null) {
@@ -226,6 +231,34 @@ function isBulletCollideObstacle(bullet, obstacle) {
 	var bulletAABB = new THREE.Box3(minBulletBox,maxBulletBox);
 	var obstacleAABB = new THREE.Box3(minObsBox,maxObsBox);
 	return bulletAABB.intersectsBox(obstacleAABB);
+}
+
+function checkPlayerCollision(player) {
+	for(var i = 0; i < obstacles.length; i++) {
+		var obstacle = obstacles[i];
+		if(isPlayerCollideObstacle(player,obstacle)) {
+			playerHealth--;
+			playerIsHit = true;
+		} else {
+			playerIsHit = false;
+		}
+	}
+}
+
+function isPlayerCollideObstacle(player, obstacle) {
+	var minPlayerBox = new THREE.Vector3(player.position.x,player.position.y,player.position.z);
+	minPlayerBox.sub(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
+	var maxPlayerBox = new THREE.Vector3(player.position.x,player.position.y,player.position.z);
+	maxPlayerBox.add(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
+
+	var minObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
+	minObsBox.sub(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
+	var maxObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
+	maxObsBox.add(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
+
+	var playerAABB = new THREE.Box3(minPlayerBox,maxPlayerBox);
+	var obstacleAABB = new THREE.Box3(minObsBox,maxObsBox);
+	return playerAABB.intersectsBox(obstacleAABB);
 }
 
 function add3DAxis() {

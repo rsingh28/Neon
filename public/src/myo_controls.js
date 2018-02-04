@@ -17,7 +17,12 @@ function initMyo(){
 	});
 	Myo.on('imu', function(data){
 		playerXPos = data.orientation.y / 0.35;
-		console.log(playerXPos);
+		console.log(playerIsHit);
+		if (playerHealth ) {
+			console.log("player collide!");
+			this.vibrate();
+		}
 	});
+
 	
 }
