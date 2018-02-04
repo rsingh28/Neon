@@ -15,7 +15,7 @@ var BULLET_SIZE = 0.1;
 var PLAYER_SIZE = 0.5;
 var PLAYER_INIT_POS = new THREE.Vector3(0,0,0);
 var PLAYER_MAX_HEALTH = 50;
-var HEALTH_BAR_WIDTH = 4.7;
+var HEALTH_BAR_WIDTH = 2.15;
 
 // Globals
 var scene = null;
@@ -124,6 +124,7 @@ function initGame() {
 	var matHealthBar = new THREE.MeshBasicMaterial( {color: 0xff0000} );
 	healthBar = new THREE.Mesh(geoHealthBar, matHealthBar);
 	healthBar.position.set(0,1,3);
+	healthBar.scale.x = HEALTH_BAR_WIDTH;
 	scene.add(healthBar);
 
 	geoObstacle = new THREE.BoxGeometry(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH);
@@ -265,7 +266,6 @@ function onUpdate() {
 	// update player
 	var time = performance.now() * 0.005;
 	checkPlayerCollision(player);
-	console.log(playerHealth);
 	if (playerHealth <= 0) {
 		camera.lookAt(new THREE.Vector3(1,1,1)); // u dead
 	} 
@@ -324,7 +324,7 @@ function checkPlayerCollision(player) {
 		if(isPlayerCollideObstacle(player,obstacle)) {
 			playerHealth--;
 			healthBar.scale.x = HEALTH_BAR_WIDTH - (HEALTH_BAR_WIDTH * ( 1 - (playerHealth / PLAYER_MAX_HEALTH)));
-			console.log(healthBar.geometry.parameters.width);
+			console.log(healthBar.scale.x);
 		}
 	}
 }
