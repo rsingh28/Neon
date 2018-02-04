@@ -13,6 +13,7 @@ var N_BULLETS_POOL = 10;
 var BULLET_SPEED = 0.1;
 var BULLET_SIZE = 0.1;
 var PLAYER_SIZE = 0.5;
+var PLAYER_INIT_POS = new THREE.Vector3(0,0,0);
 
 // Globals
 var scene = null;
@@ -68,10 +69,12 @@ function initRenderer() {
 	//controls.target.set(0,0,1);
 
 	add3DAxis();
-	initGame();
-	
-	//onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
-	initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
+	initGame();	
+}
+
+function onAfterLoad() {
+	onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
+	//initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
 }
 
 function initGame() {
@@ -86,21 +89,57 @@ function initGame() {
 	generateObstacles();
 	addObstacles();
 
-	var geoPlayer = new THREE.SphereGeometry( PLAYER_SIZE, 32, 32 );
-	var matPlayer = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-	player = new THREE.Mesh(geoPlayer, matPlayer);
-	player.position.set(0,2*PLAYER_SIZE,0);
-	scene.add(player);
-
 	geoBullet = new THREE.SphereGeometry( BULLET_SIZE, 16, 16 );
 	matBullet = new THREE.MeshBasicMaterial( {color: 0xff00ff} );
 	createBulletPool();
+
+	// create lights
+	scene.add( new THREE.AmbientLight( 0x222222 ) );
+
+	var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+	directionalLight.position.set( 1, 1, 1 ).normalize();
+	scene.add( directionalLight );
+
+	createPlayer();
+}
+
+function createPlayer() {
+	/*var geoPlayer = new THREE.SphereGeometry( PLAYER_SIZE, 32, 32 );
+	var matPlayer = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+	player = new THREE.Mesh(geoPlayer, matPlayer);
+	player.position.set(0,2*PLAYER_SIZE,0);
+	scene.add(player);*/
+
+	var onProgress = function ( xhr ) {
+	if ( xhr.lengthComputable ) {
+			var percentComplete = xhr.loaded / xhr.total * 100;
+			console.log( Math.round(percentComplete, 2) + '% downloaded' );
+		}
+	};
+	var onError = function ( xhr ) { };
+
+	THREE.Loader.Handlers.add( /\.tga$/i, new THREE.TGALoader() );
+
+	var mtlLoader = new THREE.MTLLoader();
+	mtlLoader.setPath( '../../assets/Light Cycle/' );
+	mtlLoader.load( 'HQ_Movie cycle.mtl', function( materials ) {
+		materials.preload();
+		var objLoader = new THREE.OBJLoader();
+		objLoader.setMaterials( materials );
+		objLoader.setPath( '../../assets/Light Cycle/' );
+		objLoader.load( 'HQ_Movie cycle.obj', function ( object ) {
+			object.scale.set(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE);
+			player = object;
+			scene.add(object);
+			onAfterLoad();
+		}, onProgress, onError );
+	});
 }
 
 function createBulletPool() {
 	for(var i = 0; i < N_BULLETS_POOL; i++) {
 		var bullet = new THREE.Mesh(geoBullet, matBullet);
-		bullet.position.set(player.position.x,player.position.y,player.position.z);
+		bullet.position.set(PLAYER_INIT_POS.x, PLAYER_INIT_POS.y, PLAYER_INIT_POS.z);
 		bullets.push({"mesh":bullet, "alive":false});
 		scene.add(bullet);
 	}
