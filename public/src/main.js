@@ -81,7 +81,7 @@ function initGame() {
 	plane.position.set(0,PLANE_LENGTH/2,0);
 	scene.add(plane);
 
-	geoObstacle = new THREE.BoxGeometry(1,OBSTACLE_WIDTH,1);
+	geoObstacle = new THREE.BoxGeometry(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH);
 	matObstacle = new THREE.MeshBasicMaterial( {color: 0xff0000} );
 	generateObstacles();
 	addObstacles();
@@ -219,9 +219,9 @@ function isBulletCollideObstacle(bullet, obstacle) {
 	maxBulletBox.add(new THREE.Vector3(BULLET_SIZE,BULLET_SIZE,BULLET_SIZE));
 
 	var minObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
-	minObsBox.sub(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
+	minObsBox.sub(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
 	var maxObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
-	maxObsBox.add(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
+	maxObsBox.add(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
 
 	var bulletAABB = new THREE.Box3(minBulletBox,maxBulletBox);
 	var obstacleAABB = new THREE.Box3(minObsBox,maxObsBox);
