@@ -3,7 +3,9 @@ McHacks 2018
 
 ## Installing the Application
 
-`git clone https://github.com/kevenv/mchacks2018.git`
+1. Clone the repo: `git clone https://github.com/kevenv/mchacks2018.git`
+
+2. If you want the complete game expereince, you will need Myo arm. Install and set up [Myo Connect](https://www.myo.com/) and make sure it works on your machine, i.e. [diagnostics](http://diagnostics.myo.com/) show your device as connected and responding to forearm movements.
 
 ## Running the Application
 
@@ -29,9 +31,9 @@ function onAfterLoad() {
 
 #### Controls:
 
-* Moving sideways: move the forearm wearing Myo handband in the corresponding direction horizontally.
+* Moving sideways: move the forearm wearing Myo armband in the corresponding direction horizontally.
 
-* Shooting: move the forearm wearing Myo handband upwards and bring it back down. You can shoot only one bullet at a time.
+* Shooting: move the forearm wearing Myo armband upwards and bring it back down. You can shoot only one bullet at a time.
 
 
 ### Demo mode (doesn't need Myo armband)
