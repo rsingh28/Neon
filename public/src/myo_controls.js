@@ -17,11 +17,14 @@ function initMyo(){
 	});
 	Myo.on('imu', function(data){
 		playerXPos = data.orientation.y / 0.35;
+		//console.log(data.orientation.z);
 	});
 
 	
-	Myo.on('fist', function(){
+	Myo.on('imu', function(data){
+		if(data.orientation.z > 0.5){
+			console.log(data.orientation.z);
 			shootBullet();
+		}
 	});
-
 }
