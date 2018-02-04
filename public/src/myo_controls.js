@@ -1,12 +1,13 @@
 Myo.connect();
 
 var playerXPos = null;
+var bul=0;
 
 function initMyo(){
 	console.log("test");
 
-	Myo.on('fist', function(){
-
+	Myo.on('fingers_spread', function(){
+		Myo.setLockingPolicy("none");
 		console.log('Hello Myo!');
 		this.vibrate();
 		this.zeroOrientation();
@@ -17,7 +18,11 @@ function initMyo(){
 	});
 	Myo.on('imu', function(data){
 		playerXPos = data.orientation.y / 0.35;
-		console.log(playerXPos);
+		//console.log(playerXPos);
 	});
 	
+	Myo.on('fist', function(){
+			shootBullet();
+	});
+
 }
