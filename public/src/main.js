@@ -330,17 +330,13 @@ function checkPlayerCollision(player) {
 }
 
 function isPlayerCollideObstacle(player, obstacle) {
-	var minPlayerBox = new THREE.Vector3(player.position.x,player.position.y,player.position.z);
-	minPlayerBox.sub(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
-	var maxPlayerBox = new THREE.Vector3(player.position.x,player.position.y,player.position.z);
-	maxPlayerBox.add(new THREE.Vector3(PLAYER_SIZE,PLAYER_SIZE,PLAYER_SIZE));
 
 	var minObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
 	minObsBox.sub(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
 	var maxObsBox = new THREE.Vector3(obstacle.x,obstacle.y,obstacle.z);
 	maxObsBox.add(new THREE.Vector3(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH));
 
-	var playerAABB = new THREE.Box3(minPlayerBox,maxPlayerBox);
+	var playerAABB = new THREE.Box3().setFromObject(player);
 	var obstacleAABB = new THREE.Box3(minObsBox,maxObsBox);
 	return playerAABB.intersectsBox(obstacleAABB);
 }
