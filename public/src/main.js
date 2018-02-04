@@ -72,8 +72,20 @@ function initRenderer() {
 	//controls = new THREE.OrbitControls(camera, renderer.domElement);
 	//controls.target.set(0,0,1);
 
+	// cubemap
+	var path = "assets/textures/";
+	var format = '.png';
+	var urls = [
+			path + 'py' + format, path + 'py' + format,
+			path + 'py' + format, path + 'py' + format,
+			path + 'py' + format, path + 'py' + format
+		];
+	var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+	reflectionCube.format = THREE.RGBFormat;
+	scene.background = reflectionCube;
+
 	add3DAxis();
-	initGame();	
+	initGame();
 }
 
 function onAfterLoad() {
@@ -82,14 +94,32 @@ function onAfterLoad() {
 }
 
 function initGame() {
+	// textures
+	var texture = new THREE.TextureLoader().load( 'assets/textures/floor.png' );
+	var textureMetal = new THREE.TextureLoader().load( 'assets/textures/metal.jpg' );
+	// var maxAnisotropy = renderer.getMaxAnisotropy();
+	var maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+	
+	texture.anisotropy = maxAnisotropy;
+	texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+	
+	textureMetal.anisotropy = maxAnisotropy;
+	textureMetal.wrapS = textureMetal.wrapT = THREE.RepeatWrapping;
+
+	var tmpx, tmpy;
+	tmpx = PLANE_WIDTH;
+	tmpy = 256 * PLANE_LENGTH/1000;
+	texture.repeat.set( tmpx, tmpy );
+	textureMetal.repeat.set( 1, 1 );
+
 	var geoPlane = new THREE.BoxGeometry(PLANE_WIDTH, PLANE_LENGTH, 0.001);
-	var matPlane = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
+	var matPlane = new THREE.MeshBasicMaterial( {map : texture} );
 	var plane = new THREE.Mesh(geoPlane, matPlane);
 	plane.position.set(0,PLANE_LENGTH/2,0);
 	scene.add(plane);
 
 	geoObstacle = new THREE.BoxGeometry(OBSTACLE_WIDTH,OBSTACLE_WIDTH,OBSTACLE_WIDTH);
-	matObstacle = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+	matObstacle = new THREE.MeshBasicMaterial( {map : textureMetal} );
 	generateObstacles();
 	addObstacles();
 
