@@ -11,6 +11,9 @@ function initMyo(){
 		this.vibrate();
 		this.zeroOrientation();
 		requestAnimationFrame(onRender);
+		// console.log('starting...');
+		// repaint()
+		console.log('started');
 		onUpdate();
 		renderer.render(scene, camera);
 

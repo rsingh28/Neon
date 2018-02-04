@@ -40,6 +40,8 @@ var playerXPos = null;
 var playerHealth = PLAYER_MAX_HEALTH;
 var healthBar = null;
 
+var playerScore = 0;
+
 // Events & callbacks
 document.addEventListener("load", onLoad());
 document.addEventListener("keypress", onKeypress);
@@ -91,14 +93,20 @@ function initRenderer() {
 }
 
 function onAfterLoad() {
-	//onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
-	initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
+	setInterval(function() {
+		if(playerHealth > 0){
+			playerScore++;
+			document.getElementById('playerScore').innerHTML = playerScore;
+		}
+	}, 1000)
+	onRender(); // uncomment this if want to use without Myo; comment if want to use with Myo
+	// initMyo(); // comment this if want to use without Myo; uncomment if want to use with Myo
 }
 
 function initGame() {
 	// textures
 	var texture = new THREE.TextureLoader().load( 'assets/textures/floor.png' );
-	var textureMetal = new THREE.TextureLoader().load( 'assets/textures/metal.jpg' );
+	var textureMetal = new THREE.TextureLoader().load( 'assets/textures/metal.png' );
 	// var maxAnisotropy = renderer.getMaxAnisotropy();
 	var maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 	
@@ -176,6 +184,7 @@ function createPlayer() {
 			onAfterLoad();
 		}, onProgress, onError );
 	});
+
 }
 
 function createBulletPool() {
@@ -251,6 +260,15 @@ function addObstacle(x,y) {
 	scene.add(obstacle);
 }
 
+function repaint() {
+	scene = new THREE.Scene();
+	// camera
+	camera = new THREE.PerspectiveCamera(37, WINDOW_WIDTH/WINDOW_HEIGHT, 0.1, 1000);
+	camera.up.set(0,0,1);
+	camera.position.set(0,-4,1);
+	camera.lookAt(new THREE.Vector3(0,0,1));
+}
+
 function onUpdate() {
 	var dt = performance.now()-lastTime;
 	lastTime = performance.now();
@@ -267,7 +285,14 @@ function onUpdate() {
 	checkPlayerCollision(player);
 	console.log(playerHealth);
 	if (playerHealth <= 0) {
-		camera.lookAt(new THREE.Vector3(1,1,1)); // u dead
+		// camera.up.set(0,0,1);
+		// camera.position.set(0,-4,1);
+
+		console.log('Player score ' + playerScore);
+		repaint()
+
+
+
 	} 
 
 	// if Myo gives playerXPos, use it
@@ -292,6 +317,7 @@ function checkBulletCollision(bullet) {
 		var obstacle = obstacles[i];
 		if(isBulletCollideObstacle(bullet.mesh,obstacle)) {
 			console.log("collide!");
+			playerScore = playerScore + 5;
 			//todo: kill bullet
 			bullet.alive = false;
 			bullet.mesh.visible = false;

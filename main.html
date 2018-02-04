@@ -4,15 +4,41 @@
 		<meta charset=utf-8>
 		<title>McHacks 2018</title>
 		<style>
-			body { margin: 10; }
+			body { margin: 10; background-color: black; font-family: 'VT323', monospace; color: white }
+			
+			#instructions {
+				
+			}
+
+			#myScore {
+			}
 
 			#viewport {
 				width: 800; height: 600;
-				float: left;
+			}
+
+			#highscores {
+				float: right;
 			}
 
 			#ui {
-				float: right;
+				float: left;
+			}
+
+			.column {
+			    float: left;
+			}
+
+			.small {
+				width: 20%;
+				padding-left: 20px;
+			}
+
+			/* Clear floats after the columns */
+			.row:after {
+			    content: "";
+			    display: table;
+			    clear: both;
 			}
 
 			label {
@@ -21,9 +47,56 @@
 				text-align: left;
 			}​
 		</style>
+		<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 	</head>
 	<body>
-		<div id="viewport"></div>
+		<div class="row">
+		  <div class="column small">
+		  	<h2 style="color: #00c6ff">> instructions</h2>
+				<p>bruh this is so easy</p>
+				<p>just figure it out urself</p>
+
+			<h2 style="color: #00c6ff">> my_score</h2>
+				<span id='playerScore'></span>
+			
+			<br><br><br><br><br><br>
+			<br><br><br><br><br><br>
+			<br><br><br><br><br><br><br><br>
+			<h2 style="color: #00c6ff">NEON</h2>
+				<p>a McHacks project</p>
+		  </div>
+		  <div class="column"><div id="viewport"></div></div>
+		  <div class="column small">
+		  	<h2 style="color: #00c6ff">> high_scores</h2>
+				<ol>
+					<li>3189</li>
+					<li>2753</li>
+					<li>2489</li>
+				</ol>
+		  </div>
+		</div>
+
+		<!-- <div id="highscores">
+				<h2 style="color: #00c6ff">> high_scores</h2>
+				<ol>
+					<li>549</li>
+					<li>420</li>
+					<li>320</li>
+				</ol>
+			</div>
+			<div id="instructions">
+				<h2 style="color: #00c6ff">> instructions</h2>
+				<p>bruh this is so easy</p>
+				<p>just figure it out urself</p>
+			</div>
+			<div id="myScore">
+				<h2 style="color: #00c6ff">> my_score</h2>
+				<span id='playerScore'></span>
+			</div>
+			
+		<div style="text-align:center">
+			<div id="viewport"></div>
+		</div> -->
 		<script src="./myo.js"></script>
 		<script src="public/libs/three.js"></script>
 		<script src="public/libs/OBJLoader.js"></script>
