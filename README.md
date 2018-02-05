@@ -1,5 +1,5 @@
-# mchacks2018
-McHacks 2018
+# Neon
+McHacks 2018 Project
 
 ## Installing the Application
 
