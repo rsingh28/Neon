@@ -3,7 +3,7 @@ McHacks 2018 Project
 
 ## Installing the Application
 
-1. Clone the repo: `git clone https://github.com/kevenv/mchacks2018.git`
+1. Clone the repo: `git clone https://github.com/rsingh28/Neon.git`
 
 2. If you want the complete game expereince, you will need Myo arm. Install and set up [Myo Connect](https://www.myo.com/) and make sure it works on your machine, i.e. [diagnostics](http://diagnostics.myo.com/) show your device as connected and responding to forearm movements.
 
