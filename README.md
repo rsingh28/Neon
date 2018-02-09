@@ -1,5 +1,9 @@
 # Neon
-McHacks 2018 Project
+McHacks 2018
+
+Winner of "Most Retro Hack" at McHacks 2018 (McGill University).
+
+https://devpost.com/software/neon-s2grn1
 
 ## Installing the Application
 
