@@ -29,7 +29,7 @@ function onAfterLoad() {
 
 3. Open `http://localhost:8000/main.html` in your browser.
 
-4. Make sure Myo armband is connected connected and synced with your computer. Hold your hand perpendicularly to the screen.
+4. Make sure Myo armband is connected and synced with your computer. Hold your hand perpendicularly to the screen.
 
 5. To start the game, unlock the Myo armband and make Myo "finger spread" gesture. You are playing the game now if anything went smoothly!
 
